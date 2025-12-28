@@ -1,25 +1,28 @@
 # Folder Item Display
-This Python script allows you to display the items (files and folders) within a specified root folder and its subfolders. It provides a count of the total number of files and folders found.
 
-## Requirements
-- Python 3.x
-- os module (part of the Python standard library)
-## Usage
-- Modify the root_folder variable in the main function to specify the root folder path from where you want to start displaying the items. For example, if you want to display items starting from the "C:" drive, set root_folder = "C:\\".
-- Run the script using a Python interpreter.
-- The script will iterate through every other folder within the root folder and display the files and folders found.
-- It will also print the total number of files and folders.
+Tiny utility that recursively prints every file and subfolder under a root and keeps a running total. Handy when you want a quick inventory of an external drive without firing up Explorer/Finder.
 
-## Code Explanation
-The script consists of the following main components:
+## How it works
 
-1. display_items_in_folder(folder_path): This function takes a folder path as input and recursively displays the files and folders within that folder. It uses the os.listdir function to get the list of items in the folder and checks whether each item is a file or a folder. For files, it prints "File: <filename>" and increments the file counter. For folders, it recursively calls itself with the subfolder path and adds the returned file and folder counts to the counters.
+`file_reader.py` walks the directory tree with `os.listdir`, prints the path of each item, and accumulates counters for files and folders. To keep the walkthrough quick on large drives, the sample only processes every other folder in the root (`if index % 2 == 0`). You can remove that guard if you prefer a full traversal.
 
-2. main(): This function is the entry point of the script. It sets the root_folder variable to specify the root folder path and initializes the total file and folder counters. It then iterates through every other folder within the root folder using os.listdir. For each folder, it calls the display_items_in_folder function to display the items and updates the total file and folder counters accordingly.
+## Running the script
 
-3. __name__ == '__main__' block: This block ensures that the main() function is only executed when the script is run directly (not imported as a module).
+1. Edit `root_folder` inside `main()` so it points at the directory you want to inspect (e.g., `r"C:\\"`).
+2. From the repo:
 
-## Error Handling
-The script includes error handling to catch any OSError exceptions that may occur when accessing a folder. If an error occurs, it will print an error message indicating the folder path and the specific error message.
+   ```bash
+   python file_reader.py
+   ```
 
-### Note: It's recommended to handle errors more gracefully in a production environment, such as logging the error or providing a user-friendly error message.
+3. Watch the console output for file/folder listings followed by a summary total.
+
+## Customization ideas
+
+- Comment out the `if index % 2 == 0` block to iterate through every folder.
+- Replace the `print` statements with writes to a CSV if you need a record you can filter later.
+- Wrap the counters in a lightweight CLI argument parser (`argparse`) if you want to pass the root path at runtime.
+
+## Troubleshooting
+
+If you hit `PermissionError` or `OSError` messages, the script will print the failing folder and continue. Run the terminal as an administrator (Windows) or with elevated permissions (macOS/Linux) when scanning system directories.
